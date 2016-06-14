@@ -5,13 +5,49 @@ import native._
 
 @extern
 object stdlib {
-  @name("scalanative_stderr")
-  def stderr: Ptr[_] = extern
-  @name("scalanative_stdout")
-  def stdout: Ptr[_] = extern
 
-  def fopen(filename: CString, mode: CString): Ptr[_]               = extern
-  def fprintf(stream: Ptr[_], format: CString, args: Vararg*): CInt = extern
-  def malloc(size: Word): Ptr[_]                                    = extern
-  def getenv(name: CString): CString                                = extern
+  // Memory management
+
+  def malloc(size: CSize): Ptr[_] = extern
+  def calloc(num: CSize, size: CSize): Ptr[_] = extern
+  def realloc(ptr: Ptr[_], newSize: CSize): Ptr[_] = extern
+  def free(ptr: Ptr[_]): Unit = extern
+
+  // Program utilities
+
+  def abort(): Unit = extern
+  def exit(exitCode: CInt): Unit = extern
+  def quick_exit(exitCode: CInt): Unit = extern
+  def _Exit(exitCode: CInt): Unit = extern
+  def atexit(func: FunctionPtr0[Unit]): CInt
+  def at_quick_exit(func: FunctionPtr0[Unit]): CInt
+
+  // Communicating with the environment
+
+  def system(command: CString): CInt = extern
+  def getenv(name: CString): CString = extern
+
+  // Signals
+
+  def signal(sig: CInt, handler: FunctionPtr1[CInt, Unit]): FunctionPtr1[CInt, Unit] = extern
+  def raise(sig: CInt): CInt = extern
+
+  // Types
+
+  @struct class sig_atomic_t private ()
+  @struct class jmp_buf private ()
+
+  // Macros
+
+  def EXIT_SUCCESS
+  def EXIT_FAILURE
+  def SIG_DFL
+  def SIG_IGN
+  def SIG_ERR
+  def SIGABRT
+  def SIGFPE
+  def SIGILL
+  def SIGINT
+  def SIGSEGV
+  def SIGTERM
 }
